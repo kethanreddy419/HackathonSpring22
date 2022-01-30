@@ -17,7 +17,8 @@
         "express": "^4.17.2",
         "lokijs": "^1.5.12",
         "morgan": "^1.10.0",
-        "multer": "^1.4.4"
+        "multer": "^1.4.4",
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
         "bulma": "^0.9.3",
