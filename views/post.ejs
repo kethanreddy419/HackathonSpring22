@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post Item</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         input[type=text], select {
           width: 100%;
@@ -107,17 +108,14 @@
         <div class="form-container">
             <form >
                 <label for="title">enter your title...</label>
-                <input class="input" type="text" placeholder="title" id="title">
+                <input class="input" type="text" placeholder="title" id="title" required>
                 <label for="descrption">enter your description...</label>
                 <textarea class="textarea" placeholder="description" id="description"></textarea>
                 <label for="zip_code">enter your zip code...</label>
-                <input class="input" type="number" placeholder="zip code" id="zip_code">
+                <input class="input" type="number" placeholder="zip code" id="zip_code" required>
                 <label for="location">enter your location...</label>
-                <input class="input" type="text" placeholder="location" id="location">
-                
-                
-            
-                    
+                <input class="input" type="text" placeholder="location" id="location" required>
+
 
                 <button id="btn" class="button" style="vertical-align:middle"><span>submit</span></button>
 
@@ -130,11 +128,14 @@
 
             </form> -->
 
-
-            <button class="js-modal-trigger" data-target="modal-js-example">
-                upload
-              </button>
-
+            
+            
+            <button class="button is-large js-modal-trigger" data-target="modal-js-example">
+              <span class="icon is-medium">
+                <i class="fab fa-file-image"></i>
+              </span>
+              <span>upload</span>
+            </button>  
             
             
 
@@ -144,7 +145,7 @@
         <div class="modal-background"></div>
   <div class="modal-card">
     <header class="modal-card-head">
-      <p class="modal-card-title">Modal title</p>
+      <p class="modal-card-title">upload file</p>
       <button class="delete" aria-label="close"></button>
     </header>
     <section class="modal-card-body">
@@ -157,7 +158,7 @@
 
     </section>
     <footer class="modal-card-foot">
-      <button class="button is-success"type ="submit">upload</button>
+      <button class="button is-success"type ="submit" id="uploadBtn">upload</button>
         </form>
     </form> 
 
@@ -173,7 +174,7 @@
     <script>
         let datas = [];
         const handleSubmit = (ev) => {
-            ev.preventDefault();
+            //ev.preventDefault();
 
             let formData = {
                 title: document.getElementById('title').value,

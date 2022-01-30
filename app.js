@@ -4,6 +4,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
+const querystring = require('querystring')
 const multer = require('multer')
 const fs = require('fs')
 const path = require('path')
@@ -41,7 +42,7 @@ app.use(morgan('dev'));
 
 // Allow for req.body to be utilized in '/upvote-joke'
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // SET STORAGE
@@ -98,7 +99,7 @@ app.get('/random-listings', (req, res) => {
                     id: uuidv4(),
                     title: "fdsfdsfsdgfsd",
                     description: "dsafsdfswfsdfsdfsdfsdfdsfdsfds",
-                    zip_code: 1213,
+                    zip_code: "1213",
                     location: "ddsadasdasf",
                     imageName: fileId,
                     dateCreated: Date.now()
@@ -120,20 +121,38 @@ app.get('/random-listings', (req, res) => {
 
 //post-listing
 app.post('/post-listing', (req, res) => {
-    //console.log(req.body.title)
+
+    var good = true;
+
 
     var listing = listings.insert({
                     id: uuidv4(),
                     title: req.body.title,
                     description: req.body.description,
-                    zip_code: req.body.zip_code,
+                    zip_code: req.body.zip_code.toString().trim(),
                     location: req.body.location,
                     imageName: fileId + currExt,
                     dateCreated: Date.now()
                     });
-    listings.update(listing);
-    fileId ++;
+    
 
+    if (
+        listing.title == "" ||
+        listing.description == "" ||
+        req.body.zip_code == 0 ||
+        req.body.location == ""
+    ) {
+        good = false;
+        res.sendStatus(422);
+    }
+
+    console.log(error);
+
+    if (good) {
+        listings.update(listing);
+        fileId ++;
+        res.redirect('/listings');
+    }
 
 
     //var debugListing = console.debug(listings.findOne());
@@ -141,7 +160,7 @@ app.post('/post-listing', (req, res) => {
     
 
     // Send 'ok' status back
-    res.redirect('/listings');
+    // res.redirect('/listings');
 })
 
 //Home Page
@@ -151,13 +170,35 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
+var filterZip = ""
 app.get('/listings', (req, res) => {
 
-    // Render listings.ejs
+   if (filterZip == "") {
     res.render('listings',{
         data: listings.chain().find({}).simplesort('dateAdded').data().reverse()
     })
+   }
+   else {
+       console.log("filterZip ="+filterZip)
+    res.render('listings',{
+        data: listings.chain().find({'zip_code':filterZip.toString()}).simplesort('dateAdded').data().reverse()
+    })
+    
+   }
+    
+    // Render listings.ejs
+    
 })
+
+app.post('/listings', (req, res) => {
+    filterZip = req.body.zip_code.toString().trim();
+    
+   
+    
+    // Render listings.ejs
+    res.redirect('/listings')
+})
+
 
 app.get('/post', (req, res) => {
 
@@ -197,4 +238,10 @@ app.listen(process.env.PORT || 3000, () => {
 app.use( express.static( "img" ) );
 var cors = require('cors');
 const { red } = require('color-name')
+
+const { fieldOffs } = require('tar')
+
+const { empty } = require('statuses')
+const { list } = require('tar')
+
 app.use(cors());
